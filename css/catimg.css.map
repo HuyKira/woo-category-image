@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEE,2BAAE,CACD,aAAa,CAAE,GAAG,CACf,cAAc,CAAE,GAAG,CACnB,aAAa,CAAE,iBAAiB,CAChC,+BAAG,CACF,KAAK,CAAE,IAAI,CACX,KAAK,CAAE,IAAI,CACX,YAAY,CAAE,IAAI,CAGlB,gCAAC,CACA,SAAS,CAAE,IAAI,CACf,KAAK,CAAE,IAAI",
+"sources": ["catimg.scss"],
+"names": [],
+"file": "catimg.css"
+}
