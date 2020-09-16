@@ -15,7 +15,11 @@ if ( !function_exists( 'add_action' ) ) {
 define('HK_CATIMG_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('HK_CATIMG_PLUGIN_RIR', plugin_dir_path(__FILE__));
 
+// add css
 wp_enqueue_style( 'catimg', HK_CATIMG_PLUGIN_URL . 'css/catimg.css',false, '1.0','all');
+
+// add js
+wp_enqueue_script('jquery');
 wp_enqueue_script( 'catimg', HK_CATIMG_PLUGIN_URL . 'js/catimg.js',true, '1.0','all');
 
 require_once(HK_CATIMG_PLUGIN_RIR . 'include/widget.php');

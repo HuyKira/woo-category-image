@@ -12,7 +12,7 @@ class HK_Category_Image_Widget extends WP_Widget {
         echo $before_title.$title.$after_title; ?>
         <div class="list-category-widget">
             <ul>
-               <?php $args = array( 
+                <?php $args = array( 
 				    'hide_empty' => 0,
 				    'taxonomy' => 'product_cat',
 				    'parent' => 0
@@ -21,7 +21,8 @@ class HK_Category_Image_Widget extends WP_Widget {
 				    foreach ( $cates as $cate ) {  ?>
 				    	<?php 
 				    		$thumbnail_id = get_term_meta( $cate->term_id, 'thumbnail_id', true );
-				    		$image = wp_get_attachment_url( $thumbnail_id ); 
+				    		$image = wp_get_attachment_url( $thumbnail_id );
+                            $parent = $cate->term_id;
 				    	?>
 							<li>
 								<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>">
@@ -30,6 +31,18 @@ class HK_Category_Image_Widget extends WP_Widget {
 								<h4>
 									<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>"><?php echo $cate->name; ?></a>
 								</h4>
+                                <?php 
+                                    $args_child = array(  'hide_empty' => 0, 'taxonomy' => 'product_cat', 'parent' => $parent );
+                                    $cates_child = get_categories( $args_child );
+                                    if($cates_child && count($cates_child) > 0){
+                                ?>
+                                <div class="icon-show"></div>
+                                <ul>
+                                    <?php foreach ($cates_child as $key => $value) { ?>
+                                        <li><a href="<?php echo get_term_link($value->slug, 'product_cat'); ?>"><?php echo $value->name; ?></a></li>
+                                    <?php } ?>
+                                </ul>
+                                <?php } ?>
 							</li>
 				<?php } ?>
             </ul>
