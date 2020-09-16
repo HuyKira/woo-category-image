@@ -6,6 +6,13 @@ class HK_Category_Image_Widget extends WP_Widget {
     function widget($args, $instance) {
         extract( $args );
         $title      = $instance['title'];
+        $exculde    = $instance['exculde'];
+        $arrayId    = array();
+        if($exculde){
+            $arrayId    = explode(",", $exculde);
+        }
+        $isavatar = $instance[ 'isavatar' ] ? false : true;
+        $child = $instance[ 'child' ] ? false : true;
         if ( !defined('ABSPATH') )
         die('-1');
         echo $before_widget; 
@@ -15,6 +22,7 @@ class HK_Category_Image_Widget extends WP_Widget {
                 <?php $args = array( 
 				    'hide_empty' => 0,
 				    'taxonomy' => 'product_cat',
+                    'exclude'  => $arrayId,
 				    'parent' => 0
 				    ); 
 				    $cates = get_categories( $args ); 
@@ -25,23 +33,27 @@ class HK_Category_Image_Widget extends WP_Widget {
                             $parent = $cate->term_id;
 				    	?>
 							<li>
-								<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>">
-									<img src="<?php echo $image; ?>" alt="<?php echo $cate->name; ?>">
-								</a>
+                                <?php if($isavatar){ ?>
+    								<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>">
+    									<img src="<?php echo $image; ?>" alt="<?php echo $cate->name; ?>">
+    								</a>
+                                <?php } ?>
 								<h4>
 									<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>"><?php echo $cate->name; ?></a>
 								</h4>
-                                <?php 
-                                    $args_child = array(  'hide_empty' => 0, 'taxonomy' => 'product_cat', 'parent' => $parent );
-                                    $cates_child = get_categories( $args_child );
-                                    if($cates_child && count($cates_child) > 0){
-                                ?>
-                                <div class="icon-show"></div>
-                                <ul>
-                                    <?php foreach ($cates_child as $key => $value) { ?>
-                                        <li><a href="<?php echo get_term_link($value->slug, 'product_cat'); ?>"><?php echo $value->name; ?></a></li>
+                                <?php if($child){ ?>
+                                    <?php 
+                                        $args_child = array(  'hide_empty' => 0, 'taxonomy' => 'product_cat', 'parent' => $parent );
+                                        $cates_child = get_categories( $args_child );
+                                        if($cates_child && count($cates_child) > 0){
+                                    ?>
+                                    <div class="icon-show"></div>
+                                    <ul>
+                                        <?php foreach ($cates_child as $key => $value) { ?>
+                                            <li><a href="<?php echo get_term_link($value->slug, 'product_cat'); ?>"><?php echo $value->name; ?></a></li>
+                                        <?php } ?>
+                                    </ul>
                                     <?php } ?>
-                                </ul>
                                 <?php } ?>
 							</li>
 				<?php } ?>
@@ -51,6 +63,9 @@ class HK_Category_Image_Widget extends WP_Widget {
     } 
     function update($new_instance, $old_instance) {
         $instance['title']  = strip_tags($new_instance['title']);
+        $instance['exculde']  = strip_tags($new_instance['exculde']);
+        $instance[ 'isavatar' ] = $new_instance[ 'isavatar' ];
+        $instance[ 'child' ] = $new_instance[ 'child' ];
         return $instance;
     }
     function form($instance) {
@@ -58,10 +73,34 @@ class HK_Category_Image_Widget extends WP_Widget {
             'title' => 'Tiêu đề',
         );
         $instance = wp_parse_args((array) $instance, $defaults ); ?>
+        <style>
+            .group-data{
+                margin-top: 10px;
+            }
+            .checkbox-data{
+                margin-bottom: 10px;
+            }
+        </style>
         <p>
-            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Nhập tiêu đề: '); ?></label>
+            <label for="<?php echo $this->get_field_id('title'); ?>"><strong><?php _e('Nhập tiêu đề: '); ?></strong></label>
             <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $instance['title']; ?>"  />
         </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('exculde'); ?>"><strong><?php _e('Loại bỏ danh mục '); ?></strong></label><br>
+            <i>Bạn có thể loại bỏ các danh mục không muốn hiện thị bằng cách nhập các id của chuyên mục đó vào đây, cách nhau bằng 1 dấu phẩy</i>
+            <input class="widefat" id="<?php echo $this->get_field_id('exculde'); ?>" name="<?php echo $this->get_field_name('exculde'); ?>" type="text" value="<?php echo $instance['exculde']; ?>"  />
+        </p>
+        <div class="checkbox-data">
+            <label><strong>Ẩn hiện các chức năng:</strong></label><br>
+            <div class="group-data">
+                <input type="checkbox" name="<?php echo $this->get_field_name('isavatar'); ?>" <?php checked( $instance[ 'isavatar' ], 'on' ); ?> id="<?php echo esc_attr( $this->get_field_id( 'isavatar' ) ); ?>">
+                <label for="<?php echo esc_attr( $this->get_field_id( 'isavatar' ) ); ?>">Ẩn hiện ảnh đại diện</label>
+            </div>
+            <div class="group-data">
+                <input type="checkbox" name="<?php echo $this->get_field_name('child'); ?>" <?php checked( $instance[ 'child' ], 'on' ); ?> id="<?php echo esc_attr( $this->get_field_id( 'child' ) ); ?>">
+                <label for="<?php echo esc_attr( $this->get_field_id( 'child' ) ); ?>">Ẩn hiện danh mục con</label>
+            </div>
+        </div>
     <?php }
 }
  
