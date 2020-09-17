@@ -13,6 +13,7 @@ class HK_Category_Image_Widget extends WP_Widget {
         }
         $isavatar = $instance[ 'isavatar' ] ? false : true;
         $child = $instance[ 'child' ] ? false : true;
+        $showcount = $instance[ 'showcount' ] ? true : false;
         if ( !defined('ABSPATH') )
         die('-1');
         echo $before_widget; 
@@ -31,6 +32,10 @@ class HK_Category_Image_Widget extends WP_Widget {
 				    		$thumbnail_id = get_term_meta( $cate->term_id, 'thumbnail_id', true );
 				    		$image = wp_get_attachment_url( $thumbnail_id );
                             $parent = $cate->term_id;
+                            $count = '';
+                            if($showcount){
+                                $count = '<span> ('.$cate->count.')</span>';
+                            }
 				    	?>
 							<li>
                                 <?php if($isavatar){ ?>
@@ -39,7 +44,7 @@ class HK_Category_Image_Widget extends WP_Widget {
     								</a>
                                 <?php } ?>
 								<h4>
-									<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>"><?php echo $cate->name; ?></a>
+									<a href="<?php echo get_term_link($cate->slug, 'product_cat'); ?>"><?php echo $cate->name; echo $count; ?></a>
 								</h4>
                                 <?php if($child){ ?>
                                     <?php 
@@ -49,8 +54,14 @@ class HK_Category_Image_Widget extends WP_Widget {
                                     ?>
                                     <div class="icon-show"></div>
                                     <ul>
-                                        <?php foreach ($cates_child as $key => $value) { ?>
-                                            <li><a href="<?php echo get_term_link($value->slug, 'product_cat'); ?>"><?php echo $value->name; ?></a></li>
+                                        <?php 
+                                            foreach ($cates_child as $key => $value) { 
+                                            $count_child = '';
+                                            if($showcount){
+                                                $count_child = '<span> ('.$value->count.')</span>';
+                                            }
+                                        ?>
+                                            <li><a href="<?php echo get_term_link($value->slug, 'product_cat'); ?>"><?php echo $value->name; echo $count_child; ?></a></li>
                                         <?php } ?>
                                     </ul>
                                     <?php } ?>
@@ -66,6 +77,7 @@ class HK_Category_Image_Widget extends WP_Widget {
         $instance['exculde']  = strip_tags($new_instance['exculde']);
         $instance[ 'isavatar' ] = $new_instance[ 'isavatar' ];
         $instance[ 'child' ] = $new_instance[ 'child' ];
+        $instance[ 'showcount' ] = $new_instance[ 'showcount' ];
         return $instance;
     }
     function form($instance) {
@@ -94,11 +106,15 @@ class HK_Category_Image_Widget extends WP_Widget {
             <label><strong>Ẩn hiện các chức năng:</strong></label><br>
             <div class="group-data">
                 <input type="checkbox" name="<?php echo $this->get_field_name('isavatar'); ?>" <?php checked( $instance[ 'isavatar' ], 'on' ); ?> id="<?php echo esc_attr( $this->get_field_id( 'isavatar' ) ); ?>">
-                <label for="<?php echo esc_attr( $this->get_field_id( 'isavatar' ) ); ?>">Ẩn hiện ảnh đại diện</label>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'isavatar' ) ); ?>">Ẩn ảnh đại diện</label>
             </div>
             <div class="group-data">
                 <input type="checkbox" name="<?php echo $this->get_field_name('child'); ?>" <?php checked( $instance[ 'child' ], 'on' ); ?> id="<?php echo esc_attr( $this->get_field_id( 'child' ) ); ?>">
-                <label for="<?php echo esc_attr( $this->get_field_id( 'child' ) ); ?>">Ẩn hiện danh mục con</label>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'child' ) ); ?>">Ẩn danh mục con</label>
+            </div>
+            <div class="group-data">
+                <input type="checkbox" name="<?php echo $this->get_field_name('showcount'); ?>" <?php checked( $instance[ 'showcount' ], 'on' ); ?> id="<?php echo esc_attr( $this->get_field_id( 'showcount' ) ); ?>">
+                <label for="<?php echo esc_attr( $this->get_field_id( 'showcount' ) ); ?>">Hiện số lượng sản phẩm</label>
             </div>
         </div>
     <?php }
